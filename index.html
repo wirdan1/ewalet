@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donasi QRIS Resmi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    body.light-mode {
+      background-color: #f1f5f9;
+      color: #111827;
+    }
+
+    #container {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 30px 16px 80px;
+    }
+
+    .qris-box {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 24px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    body.light-mode .qris-box {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .qris-img {
+      width: 220px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .qris-img:hover {
+      transform: scale(1.05);
+    }
+
+    .wallet-icons {
+      margin-top: 20px;
+    }
+
+    .wallet-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .wallet-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid #38bdf8;
+      transition: transform 0.2s;
+    }
+
+    .wallet-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .wallet-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .info-box {
+      font-size: 14px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 1px solid #60a5fa;
+      background-color: #1e293b;
+      color: #60a5fa;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    body.light-mode .toggle-btn {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+      border-color: #1e3a8a;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .footer a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container">
+    <div class="qris-box">
+      <h2>Scan QRIS untuk Donasi</h2>
+      <img class="qris-img" src="https://files.catbox.moe/xfh0va.jpg" alt="QRIS" onclick="toggleZoom(this)"/>
+
+      <div class="wallet-icons">
+        <div class="wallet-row">
+          <div class="wallet-btn" onclick="showInfo('dana')">
+            <img src="https://files.catbox.moe/xed0kn.jpg" alt="DANA" />
+          </div>
+          <div class="wallet-btn" onclick="showInfo('gopay')">
+            <img src="https://files.catbox.moe/xgdemr.jpg" alt="GoPay" />
+          </div>
+          <div class="wallet-btn" onclick="showInfo('pulsa')">
+            <img src="https://files.catbox.moe/iejqlr.png" alt="Pulsa" />
+          </div>
+        </div>
+        <div id="info-dana" class="info-box">No DANA: 0821-7923-0256</div>
+        <div id="info-gopay" class="info-box">No GoPay: Comingsoon</div>
+        <div id="info-pulsa" class="info-box">No Pulsa: 0895-3231-95263</div>
+      </div>
+
+      <div class="footer">
+        <p>Website ini adalah <strong>resmi</strong> dari admin.<br>
+        Nomor & email developer bisa diklik:</p>
+        <p>
+          Developer: <strong>Hadi Pratama</strong><br>
+          WA: <a href="https://wa.me/6282179230256" target="_blank">+62 821-7923-0256</a><br>
+          Email: <a href="mailto:admin@example.com">admin@example.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleMode()">Toggle Mode</button>
+
+  <audio id="audio" loop>
+    <source src="https://files.catbox.moe/78jku6.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById("audio");
+    function tryPlayAudio() {
+      audio.play().catch(() => {
+        document.body.addEventListener("click", () => {
+          audio.play();
+        }, { once: true });
+      });
+    }
+    window.addEventListener("load", tryPlayAudio);
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      document.body.classList.toggle("light-mode");
+    }
+
+    function showInfo(type) {
+      document.querySelectorAll(".info-box").forEach(el => el.style.display = "none");
+      document.getElementById(`info-${type}`).style.display = "block";
+    }
+
+    function toggleZoom(img) {
+      if (img.style.transform === "scale(2)") {
+        img.style.transform = "scale(1)";
+      } else {
+        img.style.transform = "scale(2)";
+      }
+      img.style.transition = "transform 0.3s ease";
+    }
+  </script>
+</body>
+</html>
